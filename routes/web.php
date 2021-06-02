@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\LinkController;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,3 +37,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/{name}', function (Reques
     }
     abort(404);
 });
+
+Route::middleware('auth:sanctum')->put('/links/{link}', [LinkController::class, 'update'])->name('link.update');
+
+Route::middleware('auth:sanctum')->delete('/links/{link}', [LinkController::class, 'destroy'])->name('link.destroy');
