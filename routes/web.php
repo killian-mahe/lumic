@@ -38,7 +38,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/{name}', function (Reques
     abort(404);
 });
 
-Route::get('Hello', function() {
+Route::get('/Hello', function() {
     return "Hello world !";
 });
 
