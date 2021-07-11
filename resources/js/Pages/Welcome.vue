@@ -2,7 +2,7 @@
     <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
 
 
-        <div class="max-w-6xl mx-auto space-y-8 sm:px-6 lg:px-8">
+        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
 
             <div class="flex justify-center pt-8 sm:pt-0 items-center space-x-6">
                 <application-mark class="h-16 w-auto text-gray-500 sm:h-20"></application-mark>
@@ -10,22 +10,30 @@
             </div>
 
 
-            <div v-if="canLogin" class="flex justify-center">
-                <inertia-link v-if="$page.props.user" href="/dashboard" class="text-sm no-underline text-gray-400 dark:text-gray-400 underline">
+            <div class="mt-16 flex items-center flex-col text-gray-500 dark:text-gray-500">
+                <div class="mb-4 font-bold">Reduce your URLs and share them with your teams !</div>
+                <div class="">
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="font-extralight text-sm">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
+                    <span class="mx-2 text-lg font-bold">-></span>
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="underline">janus.shareyourproject.fr/<span class="font-extrabold">yt</span></a>
+                </div>
+            </div>
+
+            <div v-if="canLogin" class="flex justify-center mt-32">
+                <inertia-link v-if="$page.props.user" href="/dashboard" class="underline text-gray-400 dark:text-gray-400">
                     Dashboard
                 </inertia-link>
 
                 <template v-else>
-                    <inertia-link :href="route('login')" class="text-sm no-underline text-gray-400 dark:text-gray-400 underline">
+                    <inertia-link :href="route('login')" class="underline text-gray-400 dark:text-gray-400">
                         Log in
                     </inertia-link>
 
-                    <inertia-link v-if="canRegister" :href="route('register')" class="ml-4 text-sm no-underline text-gray-400 dark:text-gray-400 underline">
+                    <inertia-link v-if="canRegister" :href="route('register')" class="ml-4 underline text-gray-400 dark:text-gray-400">
                         Register
                     </inertia-link>
                 </template>
             </div>
-
 
         </div>
 
