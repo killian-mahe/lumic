@@ -9,7 +9,7 @@
 
             <edit-link-modal :show="isEditing" @close="closeEdition" @delete="deleteLink" @save="updateLink" v-model="form"></edit-link-modal>
 
-            <new-link-modal :show="isCreating" @close="isCreating = false"></new-link-modal>
+            <new-link-modal :show="isCreating" @close="isCreating = false" @success="newSuccess"></new-link-modal>
 
             <div class="py-4">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -19,6 +19,10 @@
 
                         <jet-button type="button" class="ml-4" @click="isCreating = true">New</jet-button>
                     </div>
+
+                    <action-message :on="actionMessage">
+                        {{actionMessage}}
+                    </action-message>
 
                     <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
 
@@ -53,9 +57,11 @@
     import JetButton from '@/Jetstream/Button'
     import EditLinkModal from "@/Pages/Dashboard/EditLinkModal";
     import NewLinkModal from "@/Pages/Dashboard/NewLinkModal";
+    import ActionMessage from "@/Jetstream/ActionMessage";
 
     export default {
         components: {
+            ActionMessage,
             JetApplicationLogo,
             AppLayout,
             Welcome,
@@ -74,6 +80,7 @@
             return {
                 isEditing: false,
                 isCreating: false,
+                actionMessage: "",
                 searchQuery: "",
                 form : this.$inertia.form({
                     name: "",
@@ -99,6 +106,13 @@
                 this.form.delete(route('link.destroy', this.form.id), {
                     onSuccess: () => this.closeEdition()
                 })
+            },
+            newSuccess() {
+                this.isCreating = false;
+                this.actionMessage = "New link added successfully !"
+                setTimeout(() => {
+                    this.actionMessage = ""
+                }, 3000);
             },
             closeEdition() {
                 this.isEditing = false;

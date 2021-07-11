@@ -58,7 +58,7 @@ export default {
         newLink() {
             console.log("Sending form to " + route('link.store'))
             this.form.post(route('link.store'), {
-                onSuccess: () => this.close()
+                onSuccess: () => this.$emit('success')
             });
         }
     }

@@ -38,6 +38,10 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/{name}', function (Reques
     abort(404);
 });
 
+Route::get('Hello', function() {
+    return "Hello world !";
+});
+
 Route::middleware('auth:sanctum')->put('/links/{link}', [LinkController::class, 'update'])->name('link.update');
 
 Route::middleware('auth:sanctum')->delete('/links/{link}', [LinkController::class, 'destroy'])->name('link.destroy');
