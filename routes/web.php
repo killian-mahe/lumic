@@ -26,11 +26,11 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function (Request $request) {
+Route::middleware(['auth:sanctum'])->get('/dashboard', function (Request $request) {
     return Inertia::render('Dashboard', ['links' => $request->user()->links]);
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/{name}', function (Request $request, string $name) {
+Route::middleware(['auth:sanctum'])->get('/{name}', function (Request $request, string $name) {
     $link = $request->user()->links()->where('name', $name)->first();
     if ($link) {
         return redirect()->away($link->value);
