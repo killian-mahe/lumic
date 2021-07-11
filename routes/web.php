@@ -41,3 +41,5 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/{name}', function (Reques
 Route::middleware('auth:sanctum')->put('/links/{link}', [LinkController::class, 'update'])->name('link.update');
 
 Route::middleware('auth:sanctum')->delete('/links/{link}', [LinkController::class, 'destroy'])->name('link.destroy');
+
+Route::middleware('auth:sanctum')->post('/links', [LinkController::class, 'store'])->name('link.store');

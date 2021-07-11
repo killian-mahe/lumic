@@ -26,4 +26,14 @@ class Link extends Model
      */
     protected $hidden = [
     ];
+
+    /**
+     * Get the user of the link
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
 }
