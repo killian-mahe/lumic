@@ -41,4 +41,14 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    /**
+     * Get the links of a team
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function links(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Link::class);
+    }
 }
