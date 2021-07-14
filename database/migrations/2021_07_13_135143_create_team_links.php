@@ -14,14 +14,15 @@ class CreateTeamLinks extends Migration
     public function up()
     {
         Schema::table('links', function (Blueprint $table) {
+            $table->dropIndex('links_name_user_id_index');
 
-            $table->unsignedBigInteger('user_id')->nullable()->change();
+            $table->dropForeign('links_user_id_foreign');
+            $table->dropColumn(['user_id']);
+
             $table->unsignedBigInteger('team_id')->nullable();
-
             $table->foreign('team_id')->references('id')->on('teams');
 
-            $table->dropIndex('links_name_user_id_index');
-            $table->index(['name', 'user_id', 'team_id']);
+            $table->index(['name', 'team_id']);
         });
     }
 
@@ -33,13 +34,14 @@ class CreateTeamLinks extends Migration
     public function down()
     {
         Schema::table('links', function (Blueprint $table) {
-            $table->dropIndex('links_name_user_id_team_id_index');
-            $table->index(['name', 'user_id']);
+            $table->dropIndex('links_name_team_id_index');
 
             $table->dropForeign('links_team_id_foreign');
             $table->dropColumn(['team_id']);
 
-            $table->unsignedBigInteger('user_id')->nullable(false)->change();
+            $table->foreignId('user_id')->constrained();
+
+            $table->index(['name', 'user_id']);
         });
     }
 }

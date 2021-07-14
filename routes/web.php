@@ -27,7 +27,14 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum'])->get('/dashboard', function (Request $request) {
-    return Inertia::render('Dashboard', ['links' => $request->user()->links]);
+    $permissions = [];
+    foreach ($request->user()->allTeams() as $team) {
+        $permissions[$team->id] = $request->user()->teamPermissions($team);
+    }
+    return Inertia::render('Dashboard', [
+        'current_links' => $request->user()->currentTeam->links,
+        'teams_permissions' =>$permissions
+    ]);
 })->name('dashboard');
 
 Route::middleware(['auth:sanctum'])->get('/{name}', function (Request $request, string $name) {

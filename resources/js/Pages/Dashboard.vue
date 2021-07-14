@@ -34,7 +34,7 @@
 
                                 <a :href="link.value" class="mt-8 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
 
-                                <div class="flex justify-around mt-8">
+                                <div class="flex justify-around mt-8" v-if="canEdit">
                                     <jet-button type="button" @click="edit(link)">Edit</jet-button>
                                 </div>
                             </div>
@@ -71,7 +71,7 @@
             NewLinkModal
         },
         props: {
-            links: {
+            current_links: {
                 type: Array,
                 default: []
             }
@@ -90,11 +90,18 @@
             }
         },
         computed: {
-          filteredLinks() {
-              return this.links.filter(link => {
+            filteredLinks() {
+              return this.current_links.filter(link => {
                   return link.name.includes(this.searchQuery) || link.value.includes(this.searchQuery);
               })
-          }
+            },
+            canEdit() {
+                return this.$page.props.teams_permissions[this.$page.props.user.current_team.id].includes('links:update')
+                        || this.isCurrentTeamOwner;
+            },
+            isCurrentTeamOwner() {
+                return this.$page.props.user.owned_teams.map(t => t.id).includes(this.$page.props.user.current_team.id)
+            }
         },
         methods: {
             updateLink() {

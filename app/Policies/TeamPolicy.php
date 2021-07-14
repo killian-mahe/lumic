@@ -103,4 +103,40 @@ class TeamPolicy
     {
         return $user->ownsTeam($team);
     }
+
+    /**
+     * Determine whether the user can create links.
+     *
+     * @param \App\Models\User $user
+     * @param \App\Models\Team $team
+     * @return mixed
+     */
+    public function createLink(User $user, Team $team)
+    {
+        return $user->ownsTeam($team) || $user->hasTeamPermission($team, 'links:create');
+    }
+
+    /**
+     * Determine whether the user can edit links.
+     *
+     * @param \App\Models\User $user
+     * @param \App\Models\Team $team
+     * @return mixed
+     */
+    public function updateLink(User $user, Team $team)
+    {
+        return $user->ownsTeam($team) || $user->hasTeamPermission($team, 'links:update');
+    }
+
+    /**
+     * Determine whether the user can delete links.
+     *
+     * @param \App\Models\User $user
+     * @param \App\Models\Team $team
+     * @return mixed
+     */
+    public function deleteLink(User $user, Team $team)
+    {
+        return $user->ownsTeam($team) || $user->hasTeamPermission($team, 'links:delete');
+    }
 }

@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class LinkController extends Controller
@@ -36,12 +38,18 @@ class LinkController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             "name" => "required|alpha_num",
-            "value" => "required|url"
+            "value" => "required|url",
+            "team" => "required|exists:App\Models\Team,id"
         ]);
 
-        $request->user()->links()->create($validated);
+        $team = Team::find($validated['team']);
+
+        Gate::forUser($request->user())->authorize('createLink', $team);
+
+        $team->links()->create($validated);
 
         return redirect('dashboard');
     }
@@ -77,14 +85,12 @@ class LinkController extends Controller
      */
     public function update(Request $request, Link $link)
     {
-        if ($link->user_id != $request->user()->id) {
-            abort(403);
-        }
-
         $validated = $request->validate([
-           "name" => "required|alpha_num",
-           "value" => "required|url"
+            "name" => "required|alpha_num",
+            "value" => "required|url"
         ]);
+
+        Gate::forUser($request->user())->authorize('updateLink', $link->team);
 
         $link->name = $validated['name'];
         $link->value = $validated['value'];
@@ -101,9 +107,7 @@ class LinkController extends Controller
      */
     public function destroy(Request $request, Link $link)
     {
-        if ($link->user_id != $request->user()->id) {
-            abort(403);
-        }
+        Gate::forUser($request->user())->authorize('deleteLink', $link->team);
 
         $link->delete();
 
