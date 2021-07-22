@@ -139,4 +139,16 @@ class TeamPolicy
     {
         return $user->ownsTeam($team) || $user->hasTeamPermission($team, 'links:delete');
     }
+
+    /**
+     * Determine whether the user can use links.
+     *
+     * @param \App\Models\User $user
+     * @param \App\Models\Team $team
+     * @return mixed
+     */
+    public function useLink(User $user, Team $team)
+    {
+        return $user->ownsTeam($team) || $user->hasTeamPermission($team, 'links:use');
+    }
 }

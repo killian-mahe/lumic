@@ -10,24 +10,46 @@ use Inertia\Inertia;
 
 class LinkController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Redirect to the select URL.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $slug
+     * @param string $name
      */
-    public function index()
+    public function go(Request $request, string $name)
     {
-        //
+        $user = $request->user();
+        $link = $user->links()->where('name', $name)->first();
+        if ($link) {
+            return redirect()->away($link->value);
+        }
+        abort(404);
+        return null;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Redirect to the select team URL.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $slug
+     * @param string $name
      */
-    public function create()
+    public function goTeam(Request $request, string $slug = null, string $name)
     {
-        //
+        $user = $request->user();
+        $team = $user->allTeams()->firstWhere('slug', $slug);
+
+        if (!$team) abort(404);
+
+        Gate::forUser($user)->authorize('useLink', $team);
+
+        $link = $team->links()->where('name', $name)->first();
+        if ($link) {
+            return redirect()->away($link->value);
+        }
+        abort(404);
     }
 
     /**
@@ -52,28 +74,6 @@ class LinkController extends Controller
         $team->links()->create($validated);
 
         return redirect('dashboard');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Link $link)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Link $link)
-    {
-        //
     }
 
     /**

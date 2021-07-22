@@ -37,13 +37,9 @@ Route::middleware(['auth:sanctum'])->get('/dashboard', function (Request $reques
     ]);
 })->name('dashboard');
 
-Route::middleware(['auth:sanctum'])->get('/{name}', function (Request $request, string $name) {
-    $link = $request->user()->links()->where('name', $name)->first();
-    if ($link) {
-        return redirect()->away($link->value);
-    }
-    abort(404);
-});
+Route::middleware(['auth:sanctum'])->get('/{name}', [LinkController::class, 'go']);
+
+Route::middleware(['auth:sanctum'])->get('/{slug?}/{name}', [LinkController::class, 'goTeam']);
 
 Route::get('/Hello', function() {
     return "Hello world !";
