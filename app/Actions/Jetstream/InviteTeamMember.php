@@ -56,6 +56,8 @@ class InviteTeamMember implements InvitesTeamMembers
             'email.unique' => __('This user has already been invited to the team.'),
         ])->after(
             $this->ensureUserIsNotAlreadyOnTeam($team, $email)
+        )->after(
+            $this->ensureTeamSlugIsDefined($team)
         )->validateWithBag('addTeamMember');
     }
 
@@ -91,6 +93,23 @@ class InviteTeamMember implements InvitesTeamMembers
                 $team->hasUserWithEmail($email),
                 'email',
                 __('This user already belongs to the team.')
+            );
+        };
+    }
+
+    /**
+     * Ensure that the team slug is defined.
+     *
+     * @param $team
+     * @return \Closure
+     */
+    protected function ensureTeamSlugIsDefined($team)
+    {
+        return function ($validator) use ($team) {
+            $validator->errors()->addIf(
+                !$team->slug,
+                'slug',
+                __('The team slug must be defined before sharing it.')
             );
         };
     }

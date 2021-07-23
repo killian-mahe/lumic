@@ -17,6 +17,7 @@
                     <div class="col-span-6">
                         <div class="max-w-xl text-sm text-gray-600">
                             Please provide the email address of the person you would like to add to this team.
+                            <jet-input-error :message="addTeamMemberForm.errors.slug" class="mt-2" />
                         </div>
                     </div>
 

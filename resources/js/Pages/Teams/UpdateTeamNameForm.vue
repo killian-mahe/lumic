@@ -35,6 +35,19 @@
 
                 <jet-input-error :message="form.errors.name" class="mt-2" />
             </div>
+
+            <!-- Team Slug -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="slug" value="Team Slug" />
+
+                <jet-input id="slug"
+                           type="text"
+                           class="mt-1 block w-full"
+                           v-model="form.slug"
+                           :disabled="! permissions.canUpdateTeam" />
+
+                <jet-input-error :message="form.errors.slug" class="mt-2" />
+            </div>
         </template>
 
         <template #actions v-if="permissions.canUpdateTeam">
@@ -73,6 +86,7 @@
             return {
                 form: this.$inertia.form({
                     name: this.team.name,
+                    slug: this.team.slug
                 })
             }
         },
