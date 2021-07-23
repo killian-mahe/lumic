@@ -36,4 +36,14 @@ class Link extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    /**
+     * Get the team of the link
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Team::class);
+    }
 }

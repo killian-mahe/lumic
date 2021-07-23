@@ -10,7 +10,7 @@
             </div>
 
 
-            <div class="mt-16 flex items-center flex-col text-gray-500 dark:text-gray-500">
+            <div class="mt-16 flex border-black items-center flex-col text-gray-500 dark:text-gray-500">
                 <div class="mb-4 font-bold">Reduce your URLs and share them with your teams !</div>
                 <div class="">
                     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="font-extralight text-sm">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>

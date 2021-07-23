@@ -2,8 +2,13 @@
 
 namespace App\Providers;
 
+use App\Actions\Jetstream\AddTeamMember;
+use App\Actions\Jetstream\CreateTeam;
+use App\Actions\Jetstream\DeleteTeam;
 use App\Actions\Jetstream\DeleteUser;
-use Illuminate\Http\Request;
+use App\Actions\Jetstream\InviteTeamMember;
+use App\Actions\Jetstream\RemoveTeamMember;
+use App\Actions\Jetstream\UpdateTeamName;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
 
@@ -28,11 +33,17 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
 
+        Jetstream::createTeamsUsing(CreateTeam::class);
+        Jetstream::updateTeamNamesUsing(UpdateTeamName::class);
+        Jetstream::addTeamMembersUsing(AddTeamMember::class);
+        Jetstream::inviteTeamMembersUsing(InviteTeamMember::class);
+        Jetstream::removeTeamMembersUsing(RemoveTeamMember::class);
+        Jetstream::deleteTeamsUsing(DeleteTeam::class);
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }
 
     /**
-     * Configure the permissions that are available within the application.
+     * Configure the roles and permissions that are available within the application.
      *
      * @return void
      */
@@ -40,11 +51,17 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         Jetstream::defaultApiTokenPermissions(['read']);
 
-        Jetstream::permissions([
-            'create',
-            'read',
-            'update',
-            'delete',
-        ]);
+        Jetstream::role('admin', __('Administrator'), [
+            'links:create',
+            'links:read',
+            'links:use',
+            'links:update',
+            'links:delete',
+        ])->description(__('Administrator users can perform any action.'));
+
+        Jetstream::role('user', __('User'), [
+            'links:read',
+            'links:use',
+        ])->description(__('Basic users have the ability to read and use links.'));
     }
 }

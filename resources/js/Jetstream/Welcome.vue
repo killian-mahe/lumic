@@ -99,6 +99,6 @@
     export default {
         components: {
             JetApplicationLogo,
-        }
+        },
     }
 </script>

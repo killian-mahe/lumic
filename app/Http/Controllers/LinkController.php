@@ -3,29 +3,53 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\Team;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Inertia;
 
 class LinkController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Redirect to the select URL.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $slug
+     * @param string $name
      */
-    public function index()
+    public function go(Request $request, string $name)
     {
-        //
+        $user = $request->user();
+        $link = $user->links()->where('name', $name)->first();
+        if ($link) {
+            return redirect()->away($link->value);
+        }
+        abort(404);
+        return null;
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Redirect to the select team URL.
      *
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param string $slug
+     * @param string $name
      */
-    public function create()
+    public function goTeam(Request $request, string $slug = null, string $name)
     {
-        //
+        $user = $request->user();
+        $team = $user->allTeams()->firstWhere('slug', $slug);
+
+        if (!$team) abort(404);
+
+        Gate::forUser($user)->authorize('useLink', $team);
+
+        $link = $team->links()->where('name', $name)->first();
+        if ($link) {
+            return redirect()->away($link->value);
+        }
+        abort(404);
     }
 
     /**
@@ -36,36 +60,20 @@ class LinkController extends Controller
      */
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             "name" => "required|alpha_num",
-            "value" => "required|url"
+            "value" => "required|url",
+            "team" => "required|exists:App\Models\Team,id"
         ]);
 
-        $request->user()->links()->create($validated);
+        $team = Team::find($validated['team']);
+
+        Gate::forUser($request->user())->authorize('createLink', $team);
+
+        $team->links()->create($validated);
 
         return redirect('dashboard');
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Link $link)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Link $link)
-    {
-        //
     }
 
     /**
@@ -77,14 +85,12 @@ class LinkController extends Controller
      */
     public function update(Request $request, Link $link)
     {
-        if ($link->user_id != $request->user()->id) {
-            abort(403);
-        }
-
         $validated = $request->validate([
-           "name" => "required|alpha_num",
-           "value" => "required|url"
+            "name" => "required|alpha_num",
+            "value" => "required|url"
         ]);
+
+        Gate::forUser($request->user())->authorize('updateLink', $link->team);
 
         $link->name = $validated['name'];
         $link->value = $validated['value'];
@@ -101,9 +107,7 @@ class LinkController extends Controller
      */
     public function destroy(Request $request, Link $link)
     {
-        if ($link->user_id != $request->user()->id) {
-            abort(403);
-        }
+        Gate::forUser($request->user())->authorize('deleteLink', $link->team);
 
         $link->delete();
 

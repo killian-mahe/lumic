@@ -39,6 +39,9 @@ export default {
         width: {
             default: '48'
         },
+        direction: {
+            default: 'down'
+        },
         contentClasses: {
             default: () => ['py-1', 'bg-white']
         }
@@ -69,13 +72,20 @@ export default {
         },
 
         alignmentClasses() {
+            let classes = ""
             if (this.align === 'left') {
-                return 'origin-top-left left-0'
+                classes = 'origin-top-left left-0'
             } else if (this.align === 'right') {
-                return 'origin-top-right right-0'
+                classes = 'origin-top-right right-0'
             } else {
-                return 'origin-top'
+                classes = 'origin-top'
             }
+
+            if (this.direction === 'up') {
+                classes += " bottom-0"
+            }
+
+            return classes;
         },
     }
 }
