@@ -26,27 +26,28 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware(['auth:sanctum'])->get('/dashboard', function (Request $request) {
-    $permissions = [];
-    foreach ($request->user()->allTeams() as $team) {
-        $permissions[$team->id] = $request->user()->teamPermissions($team);
-    }
-    return Inertia::render('Dashboard', [
-        'current_links' => $request->user()->currentTeam->links,
-        'teams_permissions' =>$permissions
-    ]);
-})->name('dashboard');
+Route::middleware('auth:sanctum')->group(function() {
+    Route::get('/dashboard', function (Request $request) {
 
-Route::middleware(['auth:sanctum'])->get('/{name}', [LinkController::class, 'go']);
+        $permissions = [];
+        foreach ($request->user()->allTeams() as $team) {
+            $permissions[$team->id] = $request->user()->teamPermissions($team);
+        }
+        return Inertia::render('Dashboard', [
+            'current_links' => $request->user()->currentTeam->links,
+            'teams_permissions' =>$permissions
+        ]);
+    })->name('dashboard');
 
-Route::middleware(['auth:sanctum'])->get('/{slug?}/{name}', [LinkController::class, 'goTeam']);
+    Route::get('/{name}', [LinkController::class, 'go']);
 
-Route::get('/Hello', function() {
-    return "Hello world !";
+    Route::get('/{slug}/{name}', [LinkController::class, 'goTeam']);
+
+    Route::put('/links/{link}', [LinkController::class, 'update'])->name('link.update');
+
+    Route::delete('/links/{link}', [LinkController::class, 'destroy'])->name('link.destroy');
+
+    Route::post('/links', [LinkController::class, 'store'])->name('link.store');
 });
 
-Route::middleware('auth:sanctum')->put('/links/{link}', [LinkController::class, 'update'])->name('link.update');
-
-Route::middleware('auth:sanctum')->delete('/links/{link}', [LinkController::class, 'destroy'])->name('link.destroy');
-
-Route::middleware('auth:sanctum')->post('/links', [LinkController::class, 'store'])->name('link.store');
+Route::get('/{slug}/{name}', [LinkController::class, 'goTeam']);
