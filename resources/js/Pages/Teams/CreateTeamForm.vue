@@ -22,10 +22,19 @@
                 </div>
             </div>
 
+            <!-- Team Name -->
             <div class="col-span-6 sm:col-span-4">
                 <jet-label for="name" value="Team Name" />
                 <jet-input id="name" type="text" class="mt-1 block w-full" v-model="form.name" autofocus />
                 <jet-input-error :message="form.errors.name" class="mt-2" />
+            </div>
+
+            <!-- Team Slug -->
+            <div class="col-span-6 sm:col-span-4">
+                <jet-label for="slug" value="Team Slug" />
+                <jet-input id="slug" type="text" class="mt-1 block w-full" v-model="form.slug" autofocus />
+                <jet-input-note message="This unique identifier is then used to access the team's links." class="mt-1" />
+                <jet-input-error :message="form.errors.slug" class="mt-2" />
             </div>
         </template>
 
@@ -41,6 +50,7 @@
     import JetButton from '@/Jetstream/Button'
     import JetFormSection from '@/Jetstream/FormSection'
     import JetInput from '@/Jetstream/Input'
+    import JetInputNote from '@/Jetstream/InputNote'
     import JetInputError from '@/Jetstream/InputError'
     import JetLabel from '@/Jetstream/Label'
 
@@ -49,6 +59,7 @@
             JetButton,
             JetFormSection,
             JetInput,
+            JetInputNote,
             JetInputError,
             JetLabel,
         },
@@ -57,6 +68,7 @@
             return {
                 form: this.$inertia.form({
                     name: '',
+                    slug: ''
                 })
             }
         },

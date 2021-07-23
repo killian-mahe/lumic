@@ -46,6 +46,8 @@
                            v-model="form.slug"
                            :disabled="! permissions.canUpdateTeam" />
 
+                <jet-input-note message="This unique identifier is then used to access the team's links." class="mt-1" />
+
                 <jet-input-error :message="form.errors.slug" class="mt-2" />
             </div>
         </template>
@@ -67,6 +69,7 @@
     import JetButton from '@/Jetstream/Button'
     import JetFormSection from '@/Jetstream/FormSection'
     import JetInput from '@/Jetstream/Input'
+    import JetInputNote from '@/Jetstream/InputNote'
     import JetInputError from '@/Jetstream/InputError'
     import JetLabel from '@/Jetstream/Label'
 
@@ -76,6 +79,7 @@
             JetButton,
             JetFormSection,
             JetInput,
+            JetInputNote,
             JetInputError,
             JetLabel,
         },
