@@ -61,17 +61,18 @@ class LinkController extends Controller
     public function store(Request $request)
     {
 
-        $validated = $request->validate([
+        $input = $request->validate([
             "name" => "required|alpha_num",
             "value" => "required|url",
-            "team" => "required|exists:App\Models\Team,id"
+            "team" => "required|exists:App\Models\Team,id",
+            "visibility" => "required|boolean"
         ]);
 
-        $team = Team::find($validated['team']);
+        $team = Team::find($input['team']);
 
         Gate::forUser($request->user())->authorize('createLink', $team);
 
-        $team->links()->create($validated);
+        $team->links()->create($input);
 
         return redirect('dashboard');
     }
@@ -85,15 +86,17 @@ class LinkController extends Controller
      */
     public function update(Request $request, Link $link)
     {
-        $validated = $request->validate([
+        $input = $request->validate([
             "name" => "required|alpha_num",
-            "value" => "required|url"
+            "value" => "required|url",
+            "visibility" => "required|boolean"
         ]);
 
         Gate::forUser($request->user())->authorize('updateLink', $link->team);
 
-        $link->name = $validated['name'];
-        $link->value = $validated['value'];
+        $link->name = $input['name'];
+        $link->value = $input['value'];
+        $link->visibility = $input['visibility'];
         $link->save();
 
         return redirect('dashboard');
