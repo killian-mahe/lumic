@@ -32,10 +32,11 @@
 
                                 <span class="font-semibold text-xl text-center">{{link.name}}</span>
 
-                                <a :href="link.value" class="mt-8 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
+                                <a :href="link.value" class="mt-6 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
 
-                                <div class="flex justify-around mt-8" v-if="canEdit">
-                                    <jet-button type="button" @click="edit(link)">Edit</jet-button>
+                                <div class="flex justify-center mt-6 space-x-4">
+                                    <jet-button type="button" @click="edit(link)" v-if="canEdit">Edit</jet-button>
+                                    <jet-link :href="link.value">Go</jet-link>
                                 </div>
                             </div>
 
@@ -55,6 +56,7 @@
     import JetApplicationLogo from '@/Jetstream/ApplicationLogo'
     import JetInput from '@/Jetstream/Input'
     import JetButton from '@/Jetstream/Button'
+    import JetLink from '@/Jetstream/Link'
     import EditLinkModal from "@/Pages/Dashboard/EditLinkModal";
     import NewLinkModal from "@/Pages/Dashboard/NewLinkModal";
     import ActionMessage from "@/Jetstream/ActionMessage";
@@ -67,6 +69,7 @@
             Welcome,
             JetInput,
             JetButton,
+            JetLink,
             EditLinkModal,
             NewLinkModal
         },
