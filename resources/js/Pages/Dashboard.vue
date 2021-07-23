@@ -30,7 +30,10 @@
 
                             <div class="p-4 flex flex-col bg-white shadow-lg sm:rounded-lg">
 
-                                <span class="font-semibold text-xl text-center">{{link.name}}</span>
+                                <span class="font-semibold text-xl flex justify-center items-center">
+                                    {{link.name}}
+                                    <lock-icon class="ml-2" size="4" v-if="!link.public"/>
+                                </span>
 
                                 <a :href="link.value" class="mt-6 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
 
@@ -60,6 +63,8 @@
     import EditLinkModal from "@/Pages/Dashboard/EditLinkModal";
     import NewLinkModal from "@/Pages/Dashboard/NewLinkModal";
     import ActionMessage from "@/Jetstream/ActionMessage";
+    import LockIcon from "@/Icons/LockIcon";
+    import UsersIcon from "@/Icons/UsersIcon";
 
     export default {
         components: {
@@ -71,7 +76,9 @@
             JetButton,
             JetLink,
             EditLinkModal,
-            NewLinkModal
+            NewLinkModal,
+            LockIcon,
+            UsersIcon
         },
         props: {
             current_links: {
@@ -88,6 +95,7 @@
                 form : this.$inertia.form({
                     name: "",
                     value: "",
+                    visibility: false,
                     id: 0
                 })
             }
@@ -132,6 +140,7 @@
                 this.form.name = link.name;
                 this.form.value = link.value;
                 this.form.id = link.id;
+                this.form.visibility = link.public;
                 this.isEditing = true;
             }
         }

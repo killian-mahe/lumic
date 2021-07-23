@@ -17,6 +17,7 @@ class Link extends Model
     protected $fillable = [
         'name',
         'value',
+        'public'
     ];
 
     /**
@@ -45,5 +46,15 @@ class Link extends Model
     public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    /**
+     * Check if the link is public.
+     *
+     * @return bool
+     */
+    public function isPublic(): bool
+    {
+        return $this->public;
     }
 }
