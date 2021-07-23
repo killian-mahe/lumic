@@ -3,7 +3,7 @@
         <app-layout>
             <template #header>
                 <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Dashboard
+                    Dashboard - {{ $page.props.user.current_team.name }}
                 </h2>
             </template>
 
