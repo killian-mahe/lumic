@@ -2,7 +2,7 @@
     <div class="relative flex items-top justify-center min-h-screen bg-gray-100 dark:bg-gray-900 sm:items-center sm:pt-0">
 
 
-        <div class="max-w-6xl mx-auto sm:px-6 lg:px-8">
+        <div class="h-screen flex flex-col justify-around sm:block sm:h-auto max-w-6xl mx-auto sm:px-6 lg:px-8">
 
             <div class="flex justify-center pt-8 sm:pt-0 items-center space-x-6">
                 <application-mark class="h-16 w-auto text-gray-500 sm:h-20"></application-mark>
@@ -11,10 +11,11 @@
 
 
             <div class="mt-16 flex border-black items-center flex-col text-gray-500 dark:text-gray-500">
-                <div class="mb-4 font-bold">Reduce your URLs and share them with your teams !</div>
-                <div class="">
+                <div class="mb-4 font-bold text-center">Reduce your URLs and share them with your teams !</div>
+                <div class=" mt-10 flex flex-col items-center sm:mt-0 sm:block">
                     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="font-extralight text-sm">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
-                    <span class="mx-2 text-lg font-bold">-></span>
+                    <chevron-icon size="5" class="inline sm:hidden mx-2"/>
+                    <chevron-icon size="5" direction="right" class="hidden sm:inline mx-2"/>
                     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="underline">janus.shareyourproject.fr/<span class="font-extrabold">yt</span></a>
                 </div>
             </div>
@@ -111,10 +112,12 @@
 
 <script>
     import ApplicationMark from '@/Jetstream/ApplicationMark'
+    import ChevronIcon from "@/Icons/ChevronIcon";
 
     export default {
         components: {
-            ApplicationMark
+            ApplicationMark,
+            ChevronIcon
         },
         props: {
             canLogin: Boolean,
