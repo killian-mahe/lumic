@@ -14,7 +14,7 @@
             <div class="py-4">
                 <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                    <div class="w-full mb-4 flex">
+                    <div class="px-2 sm:px-0 w-full mb-4 flex">
                         <jet-input type="text" v-model="searchQuery" placeholder="Search" class="flex-grow"></jet-input>
 
                         <jet-button type="button" class="ml-4" @click="isCreating = true">New</jet-button>
