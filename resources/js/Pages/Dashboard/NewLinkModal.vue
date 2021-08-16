@@ -116,8 +116,14 @@ export default {
                 team: "",
                 visibility: false
             }),
-            selectedTeam: this.$page.props.user.owned_teams[0]
+            selectedTeam: this.$page.props.teams_permissions[this.$page.props.user.current_team.id].includes('links:create')
+                            ? this.$page.props.user.current_team
+                            : this.$page.props.user.owned_teams[0]
         }
+    },
+    mounted() {
+      console.log(this.$page.props.teams_permissions);
+      console.log(this.$page.props.user.current_team);
     },
     computed: {
         selectableTeams() {
