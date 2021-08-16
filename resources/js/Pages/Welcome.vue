@@ -6,7 +6,7 @@
 
             <div class="flex justify-center pt-8 sm:pt-0 items-center space-x-6">
                 <application-mark class="h-16 w-auto text-gray-500 sm:h-20"></application-mark>
-                <span class="text-gray-500 dark:text-gray-500 text-6xl">Janus</span>
+                <span class="text-gray-500 dark:text-gray-500 text-6xl">Lumic</span>
             </div>
 
 
@@ -16,7 +16,7 @@
                     <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="font-extralight text-sm">https://www.youtube.com/watch?v=dQw4w9WgXcQ</a>
                     <chevron-icon size="5" class="inline sm:hidden mx-2"/>
                     <chevron-icon size="5" direction="right" class="hidden sm:inline mx-2"/>
-                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="underline">janus.shareyourproject.fr/<span class="font-extrabold">yt</span></a>
+                    <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" class="underline">lumic.fr/<span class="font-extrabold">yt</span></a>
                 </div>
             </div>
 
