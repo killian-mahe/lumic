@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/killian-mahe/lumic">
-    <img src="logo.svg" alt="Logo" width="80" height="80">
+    <img src="doc/logo.svg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Lumic</h3>
@@ -64,7 +64,7 @@ Designed to be used by teams and organisations, you can also share your links wi
 
 In the future, this application will allow for other advanced features such as tracking link activity or using temporary links.
 
-![img_1.png](img_1.png)
+![img_1.png](doc/img.png)
 
 ### Built With
 
