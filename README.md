@@ -2,7 +2,7 @@
 <br />
 <p align="center">
   <a href="https://github.com/killian-mahe/lumic">
-    <img src="logo.jpg" alt="Logo" width="1280" height="1280">
+    <img src="logo.svg" alt="Logo" width="80" height="80">
   </a>
 
 <h3 align="center">Lumic</h3>
