@@ -6,7 +6,7 @@
         </template>
 
         <template #content>
-            <div class="grid grid-cols-1 gap-y-3">
+            <div class="grid grid-cols-1 gap-y-6">
                 <div>
                     <jet-label for="link_name">Name</jet-label>
                     <jet-input type="text" id="link_name" class="mt-1 block w-full" v-model="form.name"></jet-input>
@@ -17,6 +17,38 @@
                     <jet-label for="link_value">Value</jet-label>
                     <jet-input type="text" id="link_value" class="mt-1 block w-full" v-model="form.value"></jet-input>
                     <jet-input-error :message="$page.props.errors.value"></jet-input-error>
+                </div>
+
+                <div>
+                    <!-- Profile Photo File Input -->
+                    <input type="file" class="hidden"
+                           ref="favicon" accept="image/png, image/jpeg"
+                           @change="updateFaviconPreview">
+
+                    <jet-label for="favicon" value="Favicon" />
+
+                    <!-- Current Profile Photo -->
+                    <div class="mt-2" v-show="!faviconPreview && link.favicon_url && !form.delete_favicon">
+                        <lumic-link-icon :link="link" size="md"/>
+                    </div>
+                    <div v-show="(!faviconPreview && !link.favicon_url) || form.delete_favicon">
+                        <span>
+                            No favicon has been set for this link
+                        </span>
+                    </div>
+
+                    <div class="mt-2" v-show="faviconPreview">
+                        <span class="block rounded-full w-20 h-20"
+                              :style="'background-size: cover; background-repeat: no-repeat; background-position: center center; background-image: url(\'' + faviconPreview + '\');'">
+                        </span>
+                    </div>
+
+                    <jet-secondary-button class="mt-2 mr-2" type="button" @click.prevent="selectNewFavicon">
+                        Select A New Picture
+                    </jet-secondary-button>
+                    <jet-secondary-button class="mt-2 mr-2" v-show="(faviconPreview || link.favicon_url) && !form.delete_favicon" type="button" @click.prevent="deleteFavicon">
+                        Delete The Favicon
+                    </jet-secondary-button>
                 </div>
             </div>
         </template>
@@ -45,8 +77,8 @@
                         </div>
                     </template>
                 </jet-dropdown>
-                <jet-danger-button v-if="canDelete" :disabled="modelValue.processing" @click="$emit('delete')">Delete</jet-danger-button>
-                <jet-button :disabled="modelValue.processing" v-if="canEdit" @click="$emit('save')">Save</jet-button>
+                <jet-danger-button v-if="canDelete" :disabled="form.processing" @click="deleteLink">Delete</jet-danger-button>
+                <jet-button :disabled="form.processing" v-if="canEdit" @click="updateLink">Save</jet-button>
             </div>
         </template>
 
@@ -59,45 +91,111 @@ import JetInput from '@/Jetstream/Input'
 import JetInputError from '@/Jetstream/InputError'
 import JetLabel from '@/Jetstream/Label'
 import JetButton from '@/Jetstream/Button'
+import JetSecondaryButton from '@/Jetstream/SecondaryButton'
 import JetDropdown from '@/Jetstream/Dropdown'
 import JetDropdownLink from '@/Jetstream/DropdownLink'
 import JetDangerButton from '@/Jetstream/DangerButton'
 import LockIcon from "@/Icons/LockIcon";
 import UsersIcon from "@/Icons/UsersIcon";
+import LumicLinkIcon from "@/Lumic/LinkIcon"
 
 export default {
     name: "EditLinkModal",
-    emits: ['close', 'delete', 'save', 'update:modelValue'],
+    emits: ['close', 'delete', 'save'],
     components: {
         JetDialogModal,
         JetInput,
         JetInputError,
         JetLabel,
         JetButton,
+        JetSecondaryButton,
         JetDangerButton,
         JetDropdown,
         JetDropdownLink,
         LockIcon,
-        UsersIcon
+        UsersIcon,
+        LumicLinkIcon
     },
-    props: ['modelValue'],
+    props: {
+        link: {
+            default: () => {}
+        }
+    },
+    data() {
+      return {
+          faviconPreview: null,
+          form : this.$inertia.form({
+              _method: 'PUT',
+              name: "",
+              value: "",
+              visibility: "",
+              favicon: null,
+              delete_favicon: false,
+              id: 0
+          })
+      }
+    },
+    beforeUpdate() {
+        if (this.link) {
+            this.form.name = this.link.name;
+            this.form.value = this.link.value;
+            this.form.visibility = this.link.public;
+            this.form.delete_favicon = false;
+            this.form.id = this.link.id;
+        } else {
+            this.form.reset();
+        }
+    },
     methods: {
+        updateLink() {
+            this.form.post(route('link.update', this.form.id), {
+                onSuccess: () => {
+                    this.reset();
+                    this.close();
+                }
+            })
+        },
+        deleteLink() {
+            this.form.delete(route('link.destroy', this.form.id), {
+                onSuccess: () => {
+                    this.reset();
+                    this.close();
+                }
+            })
+        },
+        reset() {
+            this.form.reset();
+            this.faviconPreview = null;
+            this.$refs.favicon.value = null;
+        },
+        deleteFavicon() {
+            this.faviconPreview = null;
+            this.form.favicon = null;
+            this.$refs.favicon.value = null;
+            if (this.link.favicon_url) this.form.delete_favicon = true;
+        },
         close() {
             this.$emit('close')
         },
         onVisibilitySelect(visibility) {
             this.form.visibility = visibility;
         },
+        selectNewFavicon() {
+            this.$refs.favicon.click();
+        },
+        updateFaviconPreview() {
+            this.form.delete_favicon = false;
+            const favicon = this.$refs.favicon.files[0];
+            if (!favicon) return;
+            this.form.favicon = this.$refs.favicon.files[0];
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this.faviconPreview = e.target.result;
+            }
+            reader.readAsDataURL(favicon);
+        },
     },
     computed: {
-        form: {
-            get() {
-                return this.modelValue;
-            },
-            set(value) {
-                this.$emit('update:modelValue', value);
-            }
-        },
         canEdit() {
             return this.$page.props.teams_permissions[this.$page.props.user.current_team.id].includes('links:update')
                 || this.isCurrentTeamOwner;
