@@ -121,10 +121,6 @@ export default {
                             : this.$page.props.user.owned_teams[0]
         }
     },
-    mounted() {
-      console.log(this.$page.props.teams_permissions);
-      console.log(this.$page.props.user.current_team);
-    },
     computed: {
         selectableTeams() {
             return this.$page.props.user.teams.filter(team => {
@@ -138,12 +134,16 @@ export default {
     },
     methods: {
         close() {
-            this.$emit('close')
+            this.form.reset();
+            this.$emit('close');
         },
         newLink() {
             this.form.team = this.selectedTeam.id;
             this.form.post(route('link.store'), {
-                onSuccess: () => this.$emit('success')
+                onSuccess: () => {
+                    this.$emit('success');
+                    this.form.reset();
+                }
             });
         },
         onTeamSelect(team) {
