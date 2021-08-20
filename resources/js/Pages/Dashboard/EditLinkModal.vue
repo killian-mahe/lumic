@@ -143,7 +143,7 @@ export default {
             this.form.delete_favicon = false;
             this.form.id = this.link.id;
         } else {
-            this.form.reset();
+            this.reset();
         }
     },
     methods: {
@@ -185,10 +185,14 @@ export default {
         },
         updateFaviconPreview() {
             this.form.delete_favicon = false;
+
             const favicon = this.$refs.favicon.files[0];
             if (!favicon) return;
+
             this.form.favicon = this.$refs.favicon.files[0];
+
             const reader = new FileReader();
+
             reader.onload = (e) => {
                 this.faviconPreview = e.target.result;
             }
