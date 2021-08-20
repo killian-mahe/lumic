@@ -7,7 +7,7 @@
                 </h2>
             </template>
 
-            <edit-link-modal :show="isEditing" @close="closeEdition" @delete="deleteLink" @save="updateLink" v-model="form"></edit-link-modal>
+            <edit-link-modal :show="isEditing" @close="closeEdition" :link="currentLink"></edit-link-modal>
 
             <new-link-modal :show="isCreating" @close="isCreating = false" @success="newSuccess"></new-link-modal>
 
@@ -35,7 +35,9 @@
                                     <lock-icon class="ml-2" size="4" v-if="!link.public"/>
                                 </span>
 
-                                <a :href="link.value" class="mt-6 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
+                                <lumic-link-icon :link="link" size="md" class="mx-auto"/>
+
+                                <a :href="link.value" class="mt-4 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
 
                                 <div class="flex justify-center mt-6 space-x-4">
                                     <jet-button type="button" @click="edit(link)" v-if="canEdit">Edit</jet-button>
@@ -65,6 +67,7 @@
     import ActionMessage from "@/Jetstream/ActionMessage";
     import LockIcon from "@/Icons/LockIcon";
     import UsersIcon from "@/Icons/UsersIcon";
+    import LumicLinkIcon from "@/Lumic/LinkIcon"
 
     export default {
         components: {
@@ -78,7 +81,8 @@
             EditLinkModal,
             NewLinkModal,
             LockIcon,
-            UsersIcon
+            UsersIcon,
+            LumicLinkIcon
         },
         props: {
             current_links: {
@@ -92,10 +96,13 @@
                 isCreating: false,
                 actionMessage: "",
                 searchQuery: "",
+                currentLink: null,
                 form : this.$inertia.form({
+                    _method: 'PUT',
                     name: "",
                     value: "",
                     visibility: false,
+                    favicon: null,
                     id: 0
                 })
             }
@@ -115,16 +122,6 @@
             }
         },
         methods: {
-            updateLink() {
-                this.form.put(route('link.update', this.form.id), {
-                    onSuccess: () => this.closeEdition()
-                })
-            },
-            deleteLink() {
-                this.form.delete(route('link.destroy', this.form.id), {
-                    onSuccess: () => this.closeEdition()
-                })
-            },
             newSuccess() {
                 this.isCreating = false;
                 this.actionMessage = "New link added successfully !"
@@ -135,12 +132,10 @@
             closeEdition() {
                 this.isEditing = false;
                 this.form.reset();
+                this.currentLink = null;
             },
             edit(link) {
-                this.form.name = link.name;
-                this.form.value = link.value;
-                this.form.id = link.id;
-                this.form.visibility = link.public;
+                this.currentLink = link;
                 this.isEditing = true;
             }
         }

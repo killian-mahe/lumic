@@ -70,19 +70,24 @@ class LinkController extends Controller
             "name" => "required|alpha_num",
             "value" => "required|url",
             "team" => "required|exists:App\Models\Team,id",
-            "visibility" => "required|boolean"
+            "visibility" => "required|boolean",
+            "favicon" => "nullable|mimes:jpg,jpeg,png|max:1024"
         ]);
 
         $team = Team::find($input['team']);
 
         Gate::forUser($request->user())->authorize('createLink', $team);
 
-        $team->links()->create([
+        $link = $team->links()->create([
             "name" => $input['name'],
             "value" => $input['value'],
             "team" => $input['team'],
             "public" => $input['visibility']
         ]);
+
+        if (isset($input['favicon'])) {
+            $link->updateFavicon($input['favicon']);
+        }
 
         return redirect('dashboard');
     }
@@ -99,15 +104,23 @@ class LinkController extends Controller
         $input = $request->validate([
             "name" => "required|alpha_num",
             "value" => "required|url",
-            "visibility" => "required|boolean"
+            "visibility" => "required|boolean",
+            "favicon" => "nullable|mimes:jpg,jpeg,png|max:1024",
+            "delete_favicon" => "required|boolean"
         ]);
 
         Gate::forUser($request->user())->authorize('updateLink', $link->team);
+
+        if (isset($input['favicon'])) {
+            $link->updateFavicon($input['favicon']);
+        }
 
         $link->name = $input['name'];
         $link->value = $input['value'];
         $link->public = $input['visibility'];
         $link->save();
+
+        if ($input['delete_favicon']) $link->deleteFavicon();
 
         return redirect('dashboard');
     }
