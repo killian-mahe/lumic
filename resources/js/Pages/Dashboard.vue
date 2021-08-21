@@ -24,7 +24,7 @@
                         {{actionMessage}}
                     </action-message>
 
-                    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-2">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2">
 
                         <div v-for="link in filteredLinks" :key="'link_'+link.id">
 
