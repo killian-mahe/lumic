@@ -25,8 +25,10 @@ class AdminController extends Controller
         $output = null;
 
         try {
-            (new Process(['git', 'rev-list', '--count', 'feature/admin_dashboard', '^origin/feature/admin_dashboard']))
+            (new Process(['git', 'fetch']))->run();
+            (new Process(['git', 'rev-list', '--count', 'main', '^origin/main']))
                 ->run(function ($type, $buffer) use (&$output) {
+                    dd($buffer);
                     if ($type === Process::ERR) throw new \Exception($buffer);
                     $output = (int)preg_replace("#\n|\t|\r#", "", $buffer);
                 });

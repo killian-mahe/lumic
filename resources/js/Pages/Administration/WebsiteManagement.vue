@@ -21,7 +21,7 @@
                         <span class="text-sm text-gray-600">Error message : </span><span class="text-xs text-red-400">{{$page.props.error_msg}}</span>
                     </div>
 
-                    <span v-else-if="!$page.props.commit_diff" class="text-green-500">Up to date</span>
+                    <span v-else-if="$page.props.commit_diff == 0" class="text-green-500">Up to date</span>
 
                     <div v-else>
                         <span class="text-red-400">The production website isn't up to date.</span>
