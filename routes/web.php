@@ -34,6 +34,10 @@ Route::middleware('auth:sanctum')->group(function() {
         ]);
     })->name('dashboard');
 
+    Route::get('/admin/panel', function (Request $request) {
+        return Inertia::render('Administration/Show');
+    })->name('admin.panel');
+
     Route::get('/{name}', [LinkController::class, 'go']);
 
     Route::get('/{slug}/{name}', [LinkController::class, 'goTeam']);

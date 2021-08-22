@@ -27,7 +27,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'admin'
     ];
 
     /**
@@ -73,10 +73,10 @@ class User extends Authenticatable
     /**
      * Check if the user is a web site administrator.
      *
-     * @return boolean
+     * @return bool
      */
     public function isWebsiteAdmin()
     {
-        return $this->admin;
+        return (bool)$this->admin;
     }
 }
