@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\LinkController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -34,9 +34,9 @@ Route::middleware('auth:sanctum')->group(function() {
         ]);
     })->name('dashboard');
 
-    Route::get('/admin/panel', function (Request $request) {
-        return Inertia::render('Administration/Show');
-    })->name('admin.panel');
+    Route::get('/admin/panel', [AdminController::class, 'show'])->name('admin.panel');
+
+    Route::post('/admin/update', [AdminController::class, 'updateWebsite'])->name('admin.update');
 
     Route::get('/{name}', [LinkController::class, 'go']);
 
