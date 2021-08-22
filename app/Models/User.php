@@ -10,6 +10,7 @@ use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
+use phpDocumentor\Reflection\Types\Boolean;
 
 class User extends Authenticatable
 {
@@ -26,7 +27,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'admin'
     ];
 
     /**
@@ -67,5 +68,15 @@ class User extends Authenticatable
     public function links(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->personalTeam()->links();
+    }
+
+    /**
+     * Check if the user is a web site administrator.
+     *
+     * @return bool
+     */
+    public function isWebsiteAdmin()
+    {
+        return (bool)$this->admin;
     }
 }

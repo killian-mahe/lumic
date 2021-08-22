@@ -114,6 +114,22 @@
 
                                         <div class="border-t border-gray-100"></div>
 
+                                        <!-- Administration -->
+
+                                        <span v-if="$page.props.is_website_admin">
+
+                                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                                Administration
+                                            </div>
+
+                                            <jet-dropdown-link :href="route('admin.panel')">
+                                                Administration Panel
+                                            </jet-dropdown-link>
+
+                                            <div class="border-t border-gray-100"></div>
+
+                                        </span>
+
                                         <!-- Authentication -->
                                         <form @submit.prevent="logout">
                                             <jet-dropdown-link as="button">
