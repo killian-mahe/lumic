@@ -21,22 +21,31 @@ class AdminController extends Controller
      */
     public function show(Request $request): Response
     {
+        $error = false;
         $error_message = "";
-        $output = null;
+        $origin_commits = null;
+        $local_commits = null;
 
         try {
             (new Process(['git', 'fetch']))->run();
-            (new Process(['git', 'rev-list', '--count', 'main', '^origin/main']))
-                ->run(function ($type, $buffer) use (&$output) {
+            (new Process(['git', 'rev-list', '--count', 'origin/main'], "C:\\xampp\\htdocs\\janus"))
+                ->run(function ($type, $buffer) use (&$origin_commits) {
                     if ($type === Process::ERR) throw new \Exception($buffer);
-                    $output = (int)preg_replace("#\n|\t|\r#", "", $buffer);
+                    $origin_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
+                });
+            (new Process(['git', 'rev-list', '--count', 'main']))
+                ->run(function ($type, $buffer) use (&$local_commits) {
+                    if ($type === Process::ERR) throw new \Exception($buffer);
+                    $local_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
                 });
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
+            $error = true;
         }
 
         return Inertia::render('Administration/Show', [
-            "commit_diff" => $output,
+            "commit_diff" => $origin_commits - $local_commits,
+            "error" => $error,
             "error_msg" => $error_message
         ]);
     }
@@ -51,7 +60,9 @@ class AdminController extends Controller
     {
         (new Process(['git', 'pull']))->run();
 
-        Artisan::call('migrate');
+        Artisan::call('migrate', ['--force']);
+
+        Artisan::call('optimize');
 
         return redirect()->route('admin.panel');
     }
