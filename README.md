@@ -1,4 +1,4 @@
-<!-- PROJECT LOGO -->
+<!-- PROJECT LOG -->
 <br />
 <p align="center">
   <a href="https://github.com/killian-mahe/lumic">
