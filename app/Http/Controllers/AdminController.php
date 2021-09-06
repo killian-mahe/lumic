@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Config;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -23,28 +24,20 @@ class AdminController extends Controller
     {
         $error = false;
         $error_message = "";
-        $origin_commits = null;
-        $local_commits = null;
+        $commits_number = null;
+        $current_branch = $this->getCurrentBranch();
 
         try {
-            (new Process(['git', 'fetch']))->run();
-            (new Process(['git', 'rev-list', '--count', 'origin/main'], "C:\\xampp\\htdocs\\janus"))
-                ->run(function ($type, $buffer) use (&$origin_commits) {
-                    if ($type === Process::ERR) throw new \Exception($buffer);
-                    $origin_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
-                });
-            (new Process(['git', 'rev-list', '--count', 'main']))
-                ->run(function ($type, $buffer) use (&$local_commits) {
-                    if ($type === Process::ERR) throw new \Exception($buffer);
-                    $local_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
-                });
+            $commits_number = $this->getCommitsNumber($current_branch);
         } catch (\Exception $e) {
             $error_message = $e->getMessage();
             $error = true;
         }
 
         return Inertia::render('Administration/Show', [
-            "commit_diff" => $origin_commits - $local_commits,
+            "available_branches" => $this->getGitBranches(),
+            "current_branch" => $current_branch,
+            "commit_diff" => $commits_number,
             "error" => $error,
             "error_msg" => $error_message
         ]);
@@ -60,10 +53,89 @@ class AdminController extends Controller
     {
         (new Process(['git', 'pull']))->run();
 
-        Artisan::call('migrate', ['--force']);
+        Artisan::call('migrate');
 
         Artisan::call('optimize');
 
         return redirect()->route('admin.panel');
+    }
+
+    /**
+     * Change the current Git branch.
+     *
+     * @param Request $request
+     */
+    public function changeCurrentBranch(Request $request)
+    {
+        try {
+            (new Process(['git', 'fetch']))->run();
+            (new Process(['git', 'checkout', $request->input('branch')]))->run(function ($type, $buffer) use (&$availableBranches) {
+                if ($type == Process::ERR) throw new \Exception($buffer);
+            });
+        } catch (\Exception $e) { }
+    }
+
+    /**
+     * Get the number of commits pending on remote.
+     *
+     * @param string $local_branch_name
+     * @return int|null
+     */
+    private function getCommitsNumber(string $local_branch_name): int|null
+    {
+        $origin_commits = null;
+        $local_commits = null;
+
+        (new Process(['git', 'fetch']))->run();
+        (new Process(['git', 'rev-list', '--count', 'remotes/origin/'.$local_branch_name]))
+            ->run(function ($type, $buffer) use (&$origin_commits) {
+                if ($type === Process::ERR) throw new \Exception($buffer);
+                $origin_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
+            });
+        (new Process(['git', 'rev-list', '--count', $local_branch_name]))
+            ->run(function ($type, $buffer) use (&$local_commits) {
+                if ($type === Process::ERR) throw new \Exception($buffer);
+                $local_commits = (int)preg_replace("#\n|\t|\r#", "", $buffer);
+            });
+
+        if ($origin_commits != null && $local_commits != null) return $origin_commits - $local_commits;
+        return null;
+    }
+
+    /**
+     * Get the current Git branch.
+     *
+     * @return string
+     */
+    private function getCurrentBranch(): string
+    {
+        $current_branch = null;
+        (new Process(['git', 'branch', '--show-current']))->run(function ($type, $buffer) use (&$current_branch) {
+            if ($type == Process::ERR) throw new \Exception($buffer);
+            $current_branch = preg_replace("#\n|\t|\r#", "", $buffer);
+        });
+        Config::set('git_branch', $current_branch);
+        return $current_branch;
+    }
+
+    /**
+     * Get all the Git branches available on the server.
+     *
+     * @return array
+     */
+    private function getGitBranches(): array
+    {
+        $availableBranches = [];
+
+        (new Process(['git', 'fetch']))->run();
+        (new Process(['git', 'branch', '-a']))->run(function ($type, $buffer) use (&$availableBranches) {
+            if ($type == Process::ERR) throw new \Exception($buffer);
+            $availableBranches = preg_split('/\r\n|\r|\n/', str_replace('*', '', str_replace(' ', '', $buffer)));
+            array_pop($availableBranches);
+        });
+
+        dd("hello");
+
+        return $availableBranches;
     }
 }
