@@ -18,5 +18,3 @@ use App\Http\Controllers\LinkController;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::middleware('auth:sanctum')->get('/git/branch', [\App\Http\Controllers\AdminController::class, 'getCurrentBranch'])->name('git.currentBranch');

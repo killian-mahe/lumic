@@ -22,25 +22,7 @@ class AdminController extends Controller
      */
     public function show(Request $request): Response
     {
-        $error = false;
-        $error_message = "";
-        $commits_number = null;
-        $current_branch = $this->getCurrentBranch();
-
-        try {
-            $commits_number = $this->getCommitsNumber($current_branch);
-        } catch (\Exception $e) {
-            $error_message = $e->getMessage();
-            $error = true;
-        }
-
-        return Inertia::render('Administration/Show', [
-            "available_branches" => $this->getGitBranches(),
-            "current_branch" => $current_branch,
-            "commit_diff" => $commits_number,
-            "error" => $error,
-            "error_msg" => $error_message
-        ]);
+        return $this->render($request);
     }
 
     /**
@@ -61,18 +43,29 @@ class AdminController extends Controller
     }
 
     /**
-     * Change the current Git branch.
+     * Render the administrator dashboard.
      *
      * @param Request $request
+     * @param array $errors
+     * @return Response
      */
-    public function changeCurrentBranch(Request $request)
+    public function render(Request $request, array $errors = []): Response
     {
+        $runtimeErrors = $errors;
+        $commits_number = null;
+        $current_branch = $this->getCurrentBranch();
+
         try {
-            (new Process(['git', 'fetch']))->run();
-            (new Process(['git', 'checkout', $request->input('branch')]))->run(function ($type, $buffer) use (&$availableBranches) {
-                if ($type == Process::ERR) throw new \Exception($buffer);
-            });
-        } catch (\Exception $e) { }
+            $commits_number = $this->getCommitsNumber($current_branch);
+        } catch (\Exception $e) {
+            $runtimeErrors[] = $e->getMessage();
+        }
+
+        return Inertia::render('Administration/Show', [
+            "current_branch" => $current_branch,
+            "commit_diff" => $commits_number,
+            "errors" => $runtimeErrors
+        ]);
     }
 
     /**
@@ -133,8 +126,6 @@ class AdminController extends Controller
             $availableBranches = preg_split('/\r\n|\r|\n/', str_replace('*', '', str_replace(' ', '', $buffer)));
             array_pop($availableBranches);
         });
-
-        dd("hello");
 
         return $availableBranches;
     }

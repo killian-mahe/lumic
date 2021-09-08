@@ -38,8 +38,6 @@ Route::middleware('auth:sanctum')->group(function() {
 
     Route::post('/admin/update', [AdminController::class, 'updateWebsite'])->name('admin.update');
 
-    Route::post('/admin/branch/change', [AdminController::class, 'changeCurrentBranch'])->name('admin.changeCurrentBranch');
-
     Route::get('/{name}', [LinkController::class, 'go']);
 
     Route::get('/{slug}/{name}', [LinkController::class, 'goTeam']);
