@@ -37,11 +37,11 @@
 
                                 <lumic-link-icon :link="link" size="md" class="mx-auto"/>
 
-                                <a :href="link.value" class="mt-4 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
+                                <a :href="link.value" target="_blank" class="mt-4 truncate text-gray-500 text-center hover:underline">{{link.value}}</a>
 
                                 <div class="flex justify-center mt-6 space-x-4">
                                     <jet-button type="button" @click="edit(link)" v-if="canEdit">Edit</jet-button>
-                                    <jet-link :href="link.value">Go</jet-link>
+                                    <jet-link :href="link.value" target="_blank">Go</jet-link>
                                 </div>
                             </div>
 

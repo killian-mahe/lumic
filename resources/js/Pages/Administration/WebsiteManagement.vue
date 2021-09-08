@@ -9,7 +9,14 @@
         </template>
 
         <template #content>
-            <div class="grid grid-cols-2">
+            <div class="grid grid-cols-2 gap-y-3">
+
+                <div>
+                    Git branch
+                </div>
+                <div class="italic">
+                    {{ $page.props.current_branch }}
+                </div>
 
                 <div>
                     Update status
@@ -24,11 +31,11 @@
                     <span v-else-if="$page.props.commit_diff == 0" class="text-green-500">Up to date</span>
 
                     <div v-else>
-                        <span class="text-red-400">The production website isn't up to date.</span>
+                        <span class="text-red-400">Not up to date.</span>
                         <br/>
-                        <span class="text-sm text-gray-600">Commit pending : {{$page.props.commit_diff}}</span>
+                        <span class="text-sm text-gray-600">Pending commit(s) : {{$page.props.commit_diff}}</span>
                         <br/>
-                        <jet-secondary-button :disabled="form.processing" @click="updateWebsite">Update</jet-secondary-button>
+                        <jet-secondary-button v-if="$page.props.commit_diff > 0" :disabled="form.processing" @click="updateWebsite">Update</jet-secondary-button>
                     </div>
                 </div>
 
@@ -41,13 +48,17 @@
 import JetActionSection from '@/Jetstream/ActionSection'
 import JetButton from '@/Jetstream/Button'
 import JetSecondaryButton from '@/Jetstream/SecondaryButton'
+import JetDropdown from '@/Jetstream/Dropdown'
+import JetDropdownLink from '@/Jetstream/DropdownLink'
 
 export default {
     name: "WebsiteManagement",
     components: {
         JetActionSection,
         JetButton,
-        JetSecondaryButton
+        JetSecondaryButton,
+        JetDropdown,
+        JetDropdownLink
     },
     data() {
         return {
