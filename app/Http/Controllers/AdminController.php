@@ -33,11 +33,15 @@ class AdminController extends Controller
      */
     public function updateWebsite(Request $request): Redirector|Application|RedirectResponse
     {
+        (new Process(['git', 'fetch']))->run();
         (new Process(['git', 'pull']))->run();
+        (new Process(['git', 'reset', '--hard']))->run();
 
-        Artisan::call('migrate');
+        (new Process(['composer', 'install']))->run();
 
-        Artisan::call('optimize');
+        Artisan::call('migrate -n --force');
+
+        Artisan::call('optimize -n');
 
         return redirect()->route('admin.panel');
     }
