@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -42,9 +44,9 @@ class Link extends Model
     /**
      * Get the user of the link
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
@@ -52,11 +54,21 @@ class Link extends Model
     /**
      * Get the team of the link
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
-    public function team(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function team(): BelongsTo
     {
         return $this->belongsTo(Team::class);
+    }
+
+    /**
+     * Get the logs of the link.
+     *
+     * @return HasMany
+     */
+    public function logs(): HasMany
+    {
+        return $this->hasMany(LinkLog::class);
     }
 
     /**
@@ -72,7 +84,7 @@ class Link extends Model
     /**
      * Update the link's favicon.
      *
-     * @param  \Illuminate\Http\UploadedFile  $favicon
+     * @param UploadedFile $favicon
      * @return void
      */
     public function updateFavicon(UploadedFile $favicon)
@@ -93,9 +105,9 @@ class Link extends Model
     /**
      * Get the URL to the user's profile photo.
      *
-     * @return string
+     * @return string|null
      */
-    public function getFaviconUrlAttribute()
+    public function getFaviconUrlAttribute(): ?string
     {
         return $this->favicon_path
             ? Storage::disk($this->faviconDisk())->url($this->favicon_path)
@@ -107,7 +119,7 @@ class Link extends Model
      *
      * @return string
      */
-    protected function faviconDisk()
+    protected function faviconDisk(): string
     {
         return isset($_ENV['VAPOR_ARTIFACT_NAME']) ? 's3' : config('jetstream.profile_photo_disk', 'public');
     }
