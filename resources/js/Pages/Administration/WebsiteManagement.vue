@@ -24,11 +24,9 @@
                 <div>
                     <div v-if="$page.props.commit_diff == null">
                         <span class="text-yellow-500" >Unknown</span>
-                        <br/>
-                        <span class="text-sm text-gray-600">Error message : </span><span class="text-xs text-red-400">{{$page.props.error_msg}}</span>
                     </div>
 
-                    <span v-else-if="$page.props.commit_diff == 0" class="text-green-500">Up to date</span>
+                    <span v-else-if="$page.props.commit_diff === 0" class="text-green-500">Up to date</span>
 
                     <div v-else>
                         <span class="text-red-400">Not up to date.</span>
@@ -36,6 +34,9 @@
                         <span class="text-sm text-gray-600">Pending commit(s) : {{$page.props.commit_diff}}</span>
                         <br/>
                         <jet-secondary-button v-if="$page.props.commit_diff > 0" :disabled="form.processing" @click="updateWebsite">Update</jet-secondary-button>
+                    </div>
+                    <div>
+                        <span v-for="error in $page.props.errors" class="text-xs text-red-400">{{error}}</span>
                     </div>
                 </div>
 
