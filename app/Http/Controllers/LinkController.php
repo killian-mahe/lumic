@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Link;
 use App\Models\Team;
+use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Gate;
-use Inertia\Inertia;
 
 class LinkController extends Controller
 {
@@ -16,10 +18,10 @@ class LinkController extends Controller
      * Redirect to the select URL.
      *
      * @param Request $request
-     * @param string $slug
      * @param string $name
+     * @return RedirectResponse|null
      */
-    public function go(Request $request, string $name)
+    public function go(Request $request, string $name): ?RedirectResponse
     {
         $user = $request->user();
         $link = $user->links()->where('name', $name)->first();
@@ -36,8 +38,10 @@ class LinkController extends Controller
      * @param Request $request
      * @param string $slug
      * @param string $name
+     * @return RedirectResponse
+     * @throws AuthorizationException
      */
-    public function goTeam(Request $request, string $slug, string $name)
+    public function goTeam(Request $request, string $slug, string $name): RedirectResponse
     {
         $team = Team::firstWhere('slug', $slug);
         if (!$team) abort(404);
@@ -60,10 +64,11 @@ class LinkController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param Request $request
+     * @return Application|RedirectResponse|Redirector
+     * @throws AuthorizationException
      */
-    public function store(Request $request)
+    public function store(Request $request): Redirector|RedirectResponse|Application
     {
 
         $input = $request->validate([
@@ -95,11 +100,12 @@ class LinkController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  Link  $link
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param Request $request
+     * @param Link $link
+     * @return Application|RedirectResponse|Redirector
+     * @throws AuthorizationException
      */
-    public function update(Request $request, Link $link)
+    public function update(Request $request, Link $link): Redirector|RedirectResponse|Application
     {
         $input = $request->validate([
             "name" => "required|alpha_num",
@@ -128,10 +134,12 @@ class LinkController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Link  $link
-     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @param Request $request
+     * @param Link $link
+     * @return Application|RedirectResponse|Redirector
+     * @throws AuthorizationException
      */
-    public function destroy(Request $request, Link $link)
+    public function destroy(Request $request, Link $link): Redirector|RedirectResponse|Application
     {
         Gate::forUser($request->user())->authorize('deleteLink', $link->team);
 
