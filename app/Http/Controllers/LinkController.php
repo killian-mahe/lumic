@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Link;
+use App\Models\LinkLog;
 use App\Models\Team;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Foundation\Application;
@@ -10,6 +11,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Http;
 
 class LinkController extends Controller
 {
@@ -26,6 +28,7 @@ class LinkController extends Controller
         $user = $request->user();
         $link = $user->links()->where('name', $name)->first();
         if ($link) {
+            $this->logConnection($request, $link);
             return redirect()->away($link->value);
         }
         abort(404);
@@ -49,7 +52,10 @@ class LinkController extends Controller
         $link = $team->links()->where('name', $name)->first();
         if (!$link) abort(404);
 
-        if ($link->isPublic()) return redirect()->away($link->value);
+        if ($link->isPublic()) {
+            $this->logConnection($request, $link);
+            return redirect()->away($link->value);
+        }
 
         $user = $request->user();
         if (!$user) abort(403);
@@ -58,6 +64,7 @@ class LinkController extends Controller
 
         Gate::forUser($user)->authorize('useLink', $team);
 
+        $this->logConnection($request, $link);
         return redirect()->away($link->value);
     }
 
@@ -146,5 +153,27 @@ class LinkController extends Controller
         $link->delete();
 
         return redirect('dashboard');
+    }
+
+    /**
+     * Log the connection in the database.
+     *
+     * @param Request $request
+     * @param Link $link
+     */
+    private function logConnection(Request $request, Link $link)
+    {
+        if ($request->ip() == '127.0.0.1') return;
+
+        $response = Http::withHeaders([
+            'User-Agent' => 'keycdn-tools:https://www.lumic.fr'
+        ])->get('https://tools.keycdn.com/geo.json', [
+            'host' => $request->ip()
+        ]);
+
+        $link->logs()->create([
+            'ip_address' => $request->ip(),
+            'geolocation' => json_encode($response->json()['data']['geo'])
+        ]);
     }
 }
