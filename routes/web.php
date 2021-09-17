@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\LinkController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Http\Request;
@@ -22,6 +23,9 @@ Route::get('/', function () {
 });
 
 Route::middleware('auth:sanctum')->group(function() {
+
+    Route::get('/analytics', [AnalyticsController::class, 'show'])->name('analytics');
+
     Route::get('/dashboard', function (Request $request) {
 
         $permissions = [];
