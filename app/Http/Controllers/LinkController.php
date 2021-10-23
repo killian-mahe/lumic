@@ -150,6 +150,8 @@ class LinkController extends Controller
     {
         Gate::forUser($request->user())->authorize('deleteLink', $link->team);
 
+        $link->logs()->delete();
+
         $link->delete();
 
         return redirect('dashboard');
