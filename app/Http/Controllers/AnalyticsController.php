@@ -28,6 +28,7 @@ class AnalyticsController extends Controller
 
             $stats[] = [
                 "link_id" => $link->id,
+                "link_name" => $link->name,
                 "series" => $logs->map(function ($item, $key) {
                     return [
                         "timestamp" => json_encode($item->created_at),
