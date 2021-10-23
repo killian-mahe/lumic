@@ -29,13 +29,22 @@
             </div>
 
             <div class="flex items-center justify-end mt-4">
+
                 <inertia-link v-if="canResetPassword" :href="route('password.request')" class="underline text-sm text-gray-600 hover:text-gray-900">
                     Forgot your password?
                 </inertia-link>
 
-                <jet-button class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                <jet-button type="submit" class="ml-4" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
                     Log in
                 </jet-button>
+            </div>
+
+            <hr class="my-3">
+
+            <div class="flex items-center justify-center">
+                <jet-secondary-button @click="redirectToRegister" type="button" class="ml-4">
+                    Create an account
+                </jet-secondary-button>
             </div>
         </form>
     </jet-authentication-card>
@@ -45,6 +54,7 @@
     import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
     import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
     import JetButton from '@/Jetstream/Button'
+    import JetSecondaryButton from '@/Jetstream/SecondaryButton'
     import JetInput from '@/Jetstream/Input'
     import JetCheckbox from '@/Jetstream/Checkbox'
     import JetLabel from '@/Jetstream/Label'
@@ -55,6 +65,7 @@
             JetAuthenticationCard,
             JetAuthenticationCardLogo,
             JetButton,
+            JetSecondaryButton,
             JetInput,
             JetCheckbox,
             JetLabel,
@@ -86,6 +97,9 @@
                     .post(this.route('login'), {
                         onFinish: () => this.form.reset('password'),
                     })
+            },
+            redirectToRegister() {
+                window.location = route('register')
             }
         }
     }
