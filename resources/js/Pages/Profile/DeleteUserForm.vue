@@ -26,7 +26,7 @@
                 </template>
 
                 <template #content>
-                    Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
+                    Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted including the teams you own. Please enter your password to confirm you would like to permanently delete your account.
 
                     <div class="mt-4">
                         <jet-input type="password" class="mt-1 block w-3/4" placeholder="Password"
@@ -44,7 +44,7 @@
                     </jet-secondary-button>
 
                     <jet-danger-button class="ml-2" @click="deleteUser" :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                        Delete Account
+                        Delete my account and my teams
                     </jet-danger-button>
                 </template>
             </jet-dialog-modal>

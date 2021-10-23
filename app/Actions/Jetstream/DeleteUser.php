@@ -53,6 +53,7 @@ class DeleteUser implements DeletesUsers
         $user->teams()->detach();
 
         $user->ownedTeams->each(function ($team) {
+            $team->links()->delete();
             $this->deletesTeams->delete($team);
         });
     }
