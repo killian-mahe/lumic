@@ -244,7 +244,8 @@
 
             <!-- Page Footer -->
             <footer>
-                <lumic-contribute-link class="fixed bottom-4 right-4" />
+                <contribute-link class="fixed bottom-4 right-4" />
+                <cookie-consent-banner />
             </footer>
         </div>
     </div>
@@ -257,7 +258,8 @@
     import JetDropdownLink from '@/Jetstream/DropdownLink'
     import JetNavLink from '@/Jetstream/NavLink'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
-    import LumicContributeLink from '@/Lumic/ContributeLink'
+    import ContributeLink from '@/Lumic/ContributeLink'
+    import CookieConsentBanner from '@/Lumic/CookieConsentBanner'
 
     export default {
         components: {
@@ -267,7 +269,8 @@
             JetDropdownLink,
             JetNavLink,
             JetResponsiveNavLink,
-            LumicContributeLink
+            ContributeLink,
+            CookieConsentBanner
         },
 
         data() {
