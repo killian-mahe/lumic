@@ -241,6 +241,11 @@
             <main>
                 <slot></slot>
             </main>
+
+            <!-- Page Footer -->
+            <footer>
+                <lumic-contribute-link class="fixed bottom-4 right-4" />
+            </footer>
         </div>
     </div>
 </template>
@@ -252,6 +257,7 @@
     import JetDropdownLink from '@/Jetstream/DropdownLink'
     import JetNavLink from '@/Jetstream/NavLink'
     import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
+    import LumicContributeLink from '@/Lumic/ContributeLink'
 
     export default {
         components: {
@@ -261,6 +267,7 @@
             JetDropdownLink,
             JetNavLink,
             JetResponsiveNavLink,
+            LumicContributeLink
         },
 
         data() {
