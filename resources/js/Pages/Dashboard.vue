@@ -2,9 +2,13 @@
     <div>
         <app-layout>
             <template #header>
-                <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                    Dashboard - {{ $page.props.user.current_team.name }}
-                </h2>
+                <div class="md:flex md:justify-between items-center">
+                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                        Dashboard - {{ $page.props.user.current_team.name }}
+                    </h2>
+
+                    <web-search-bar/>
+                </div>
             </template>
 
             <edit-link-modal :show="isEditing" @close="closeEdition" :link="currentLink"></edit-link-modal>
@@ -67,7 +71,8 @@
     import ActionMessage from "@/Jetstream/ActionMessage";
     import LockIcon from "@/Icons/LockIcon";
     import UsersIcon from "@/Icons/UsersIcon";
-    import LumicLinkIcon from "@/Lumic/LinkIcon"
+    import LumicLinkIcon from "@/Lumic/LinkIcon";
+    import WebSearchBar from "@/Lumic/WebSearchBar";
 
     export default {
         components: {
@@ -82,7 +87,8 @@
             NewLinkModal,
             LockIcon,
             UsersIcon,
-            LumicLinkIcon
+            LumicLinkIcon,
+            WebSearchBar
         },
         props: {
             current_links: {
