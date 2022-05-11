@@ -56,5 +56,5 @@ jobs:
         with:
           app-name: 'lumic-app'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_16847249EB8246B48D3D8E75BA5971FB }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_57E31C1FD02C4EE4A3005BE665DA4724 }}
           package: .
